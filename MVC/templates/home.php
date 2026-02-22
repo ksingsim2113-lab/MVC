@@ -4,11 +4,9 @@
 
 <body>
     <!-- Header และ Footer อาจแยกออกเป็นไฟล์แยกต่างหากได้ -->
-    <header>
-        <h1>WebSite Name</h1>
-    </header>
+
     <nav>
-        <a href="/">Home</a>
+        <?php include 'header.php' ?>
     </nav>
     <!-- Header และ Footer อาจแยกออกเป็นไฟล์แยกต่างหากได้ -->
 
@@ -18,13 +16,9 @@
     </main>
     <!-- ส่วนแสดงผลหลักของหน้า -->
 
-    <!-- Header และ Footer อาจแยกออกเป็นไฟล์แยกต่างหากได้ -->
-    <footer>
-        <p>
-            &copy; <?= date('Y') ?>. All rights reserved by Aj.M.
-        </p>
-    </footer>
-    <!-- Header และ Footer อาจแยกออกเป็นไฟล์แยกต่างหากได้ -->
+    <!-- Footer  -->
+    <?php include 'footer.php' ?>
+    <!-- Footer  -->
 </body>
 
 </html>
