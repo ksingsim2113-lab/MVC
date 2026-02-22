@@ -3,12 +3,11 @@
 <head></head>
 
 <body>
-    <!-- Header และ Footer อาจแยกออกเป็นไฟล์แยกต่างหากได้ -->
-
+    <!-- Header  -->
     <nav>
         <?php include 'header.php' ?>
     </nav>
-    <!-- Header และ Footer อาจแยกออกเป็นไฟล์แยกต่างหากได้ -->
+    <!-- Header  -->
 
     <!-- ส่วนแสดงผลหลักของหน้า -->
     <main>
