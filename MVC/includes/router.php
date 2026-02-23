@@ -8,7 +8,7 @@ const ALLOW_METHODS = ['GET', 'POST'];
 const INDEX_URI = '';
 
 // กำหนดค่าคงที่สำหรับ route เริ่มต้น
-const INDEX_ROUNTE = 'home';
+const INDEX_ROUNTE = 'login';
 
 
 // ฟังชันสำหรับทำให้ URI ที่ร้องขอเข้ามาอยู่ในรูปแบบมาตรฐาน

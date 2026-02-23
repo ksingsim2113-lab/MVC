@@ -4,6 +4,6 @@
     <nav>
         <a href="/">หน้าแรก</a>
         <a href="/event">ติดต่อเรา</a>
-        <a href='/students'>ข้อมูลนักเรียน</a>
-        <a href='/courses-new'>เพิ่มคอร์ส</a>
+        <a href="/register">register</a>
+        <a href='/login'>login</a>
     </nav>
