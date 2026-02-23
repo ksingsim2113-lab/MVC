@@ -1,0 +1,13 @@
+CREATE TABLE users (
+    id          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    email       VARCHAR(255) NOT NULL UNIQUE,
+    password    VARCHAR(255) NOT NULL,           -- เก็บ hashed password (password_hash)
+    first_name  VARCHAR(100) NOT NULL,
+    last_name   VARCHAR(100) NOT NULL,
+    gender      ENUM('male', 'female', 'other') NOT NULL,
+    birthdate   DATE NOT NULL,
+    phone       VARCHAR(20),
+    profile_img VARCHAR(255),                    -- path รูปโปรไฟล์
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
