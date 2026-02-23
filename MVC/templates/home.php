@@ -11,7 +11,13 @@
 
     <!-- ส่วนแสดงผลหลักของหน้า -->
     <main>
-        <h1>Home</h1>
+        <form method="POST">
+            <label>อีเมล</label><br>
+            <input type="email" name="email" /><br>
+            <label>รหัสผ่าน</label><br>
+            <input type="password" name="password" /><br>
+            <button type="submit">เข้าสู่ระบบ</button>
+        </form>
     </main>
     <!-- ส่วนแสดงผลหลักของหน้า -->
 
