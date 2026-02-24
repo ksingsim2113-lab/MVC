@@ -8,6 +8,7 @@
 </head>
 <body class="bg-gray-50">
 
+    <?php include TEMPLATES_DIR . '/header.php'; ?>
     <div class="container mx-auto px-4 py-8">
         <div class="mb-10 text-center">
             <h1 class="text-3xl font-bold text-gray-800 mb-4">ค้นหากิจกรรมที่น่าสนใจ</h1>
