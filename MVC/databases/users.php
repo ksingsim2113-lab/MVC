@@ -54,21 +54,21 @@ function createUser(mysqli $conn, array $data): int
 }
 
 // อัปเดตโปรไฟล์
-function updateUser(mysqli $conn, int $id, array $data): void
-{
-    $stmt = $conn->prepare(
-        "UPDATE users SET first_name=?, last_name=?, gender=?, birthdate=?, phone=?, profile_img=?
-         WHERE id=?"
-    );
-    $stmt->bind_param(
-        'ssssssi',
-        $data['first_name'],
-        $data['last_name'],
-        $data['gender'],
-        $data['birthdate'],
-        $data['phone'],
-        $data['profile_img'],
-        $id
-    );
-    $stmt->execute();
-}
+// function updateUser(mysqli $conn, int $id, array $data): void
+// {
+//     $stmt = $conn->prepare(
+//         "UPDATE users SET first_name=?, last_name=?, gender=?, birthdate=?, phone=?, profile_img=?
+//          WHERE id=?"
+//     );
+//     $stmt->bind_param(
+//         'ssssssi',
+//         $data['first_name'],
+//         $data['last_name'],
+//         $data['gender'],
+//         $data['birthdate'],
+//         $data['phone'],
+//         $data['profile_img'],
+//         $id
+//     );
+//     $stmt->execute();
+// }

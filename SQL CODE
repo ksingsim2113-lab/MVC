@@ -11,3 +11,29 @@ CREATE TABLE users (
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+//-----------------------------------------------------------------------------------------------------
+
+
+
+CREATE TABLE events (
+    id          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id     INT UNSIGNED NOT NULL,              -- ผู้สร้างกิจกรรม
+    title       VARCHAR(255) NOT NULL,              -- ชื่อกิจกรรม
+    description TEXT NOT NULL,                      -- รายละเอียด
+    location    VARCHAR(255) NOT NULL,              -- สถานที่
+    max_participants INT UNSIGNED NOT NULL,         -- จำนวนคนที่รับ
+    start_date  DATETIME NOT NULL,                  -- วันเริ่มต้น
+    end_date    DATETIME NOT NULL,                  -- วันสิ้นสุด
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- รูปภาพกิจกรรม (1 กิจกรรม มีได้หลายรูป)
+CREATE TABLE event_images (
+    id       INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    event_id INT UNSIGNED NOT NULL,
+    path     VARCHAR(255) NOT NULL,
+    FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
+);
