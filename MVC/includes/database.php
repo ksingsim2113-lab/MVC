@@ -2,6 +2,7 @@
 declare(strict_types=1);
 function getConnection(): mysqli
 {
+    
     $hostname = 'localhost';
     $dbName = 'enrollment';
     $username = 'demo';

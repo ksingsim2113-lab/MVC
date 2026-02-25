@@ -20,21 +20,22 @@
 
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-gray-800">กิจกรรมของฉัน</h1>
-        <a href="/event/create"
+        <a href="/create"
             class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition">
             + สร้างกิจกรรม
         </a>
     </div>
+    
 
-    <?php if (empty($events)): ?>
+    <?php if (empty($data['events'])): ?>
         <div class="text-center py-16 text-gray-400">
             <p class="text-4xl mb-3">📭</p>
             <p>ยังไม่มีกิจกรรม</p>
-            <a href="/event/create" class="text-indigo-600 hover:underline text-sm mt-2 inline-block">สร้างกิจกรรมแรก</a>
+            <a href="/create" class="text-indigo-600 hover:underline text-sm mt-2 inline-block">สร้างกิจกรรมแรก</a>
         </div>
     <?php else: ?>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <?php foreach ($events as $event): ?>
+            <?php foreach ($data['events'] as $event): ?>
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition">
 
                 <!-- รูปภาพ -->
@@ -54,11 +55,11 @@
                     <p class="text-xs text-gray-500 mb-3">👥 รับสูงสุด <?= $event['max_participants'] ?> คน</p>
 
                     <div class="flex gap-2">
-                        <a href="/event/edit?id=<?= $event['id'] ?>"
+                        <a href="/edit?id=<?= $event['id'] ?>"
                             class="flex-1 text-center text-sm bg-yellow-50 hover:bg-yellow-100 text-yellow-700 font-medium py-1.5 rounded-lg transition">
                             แก้ไข
                         </a>
-                        <a href="/event/delete?id=<?= $event['id'] ?>"
+                        <a href="/delete?id=<?= $event['id'] ?>"
                             onclick="return confirm('ยืนยันลบกิจกรรมนี้?')"
                             class="flex-1 text-center text-sm bg-red-50 hover:bg-red-100 text-red-600 font-medium py-1.5 rounded-lg transition">
                             ลบ
