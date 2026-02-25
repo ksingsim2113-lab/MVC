@@ -34,6 +34,7 @@ function notFound()
 function getFilePath(string $uri): string
 {
     return ROUTE_DIR . '/' . normalizeUri($uri) . '.php';
+    
 }
 
 // ฟังก์ชันหลักสำหรับการจัดการเส้นทาง (routing) ที่ถูกเรียกใช้จาก index.php

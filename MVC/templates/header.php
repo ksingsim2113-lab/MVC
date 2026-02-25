@@ -16,10 +16,17 @@
                 หน้าแรก
             </a>
 
+            <a href="/create"
+                class="hover:text-gray-200 transition duration-200">
+                สร้างกิจกรรม
+            </a>
+
             <a href="/logout"
                 class="hover:text-gray-200 transition duration-200">
                 ออกจากระบบ
             </a>
+
+
 
         </nav>
 
