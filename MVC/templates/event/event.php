@@ -59,7 +59,7 @@
                             class="flex-1 text-center text-sm bg-yellow-50 hover:bg-yellow-100 text-yellow-700 font-medium py-1.5 rounded-lg transition">
                             แก้ไข
                         </a>
-                        <a href="/delete?id=<?= $event['id'] ?>"
+                        <<a href="/delete?id=<?= $event['id'] ?>"
                             onclick="return confirm('ยืนยันลบกิจกรรมนี้?')"
                             class="flex-1 text-center text-sm bg-red-50 hover:bg-red-100 text-red-600 font-medium py-1.5 rounded-lg transition">
                             ลบ

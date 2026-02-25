@@ -5,22 +5,40 @@ require_once DATABASES_DIR . '/events.php';
 
 $conn    = getConnection();
 $eventId = (int) ($_GET['id'] ?? 0);
-$event   = getEventById($conn, $eventId);
 
-// เช็คว่าเป็นเจ้าของ
+if ($eventId <= 0) {
+    header('Location: /event');
+    exit;
+}
+
+$event = getEventById($conn, $eventId);
+
 if (!$event || $event['user_id'] !== (int) $_SESSION['user_id']) {
     header('Location: /event');
     exit;
 }
 
-// ลบรูปภาพออกจาก server ก่อน
-$images = getEventImages($conn, $eventId);
-foreach ($images as $img) {
-    $path = __DIR__ . '/../../public/' . $img['path'];
-    if (file_exists($path)) unlink($path);
+$images   = getEventImages($conn, $eventId);
+$realBase = realpath(__DIR__ . '/../public/');
+
+try {
+    deleteEvent($conn, $eventId, (int) $_SESSION['user_id']);
+} catch (Exception $e) {
+    error_log('deleteEvent ล้มเหลว: ' . $e->getMessage());
+    $_SESSION['error'] = 'ไม่สามารถลบกิจกรรมได้';
+    header('Location: /event');
+    exit;
 }
 
-deleteEvent($conn, $eventId, (int) $_SESSION['user_id']);
+foreach ($images as $img) {
+    $realPath = realpath($realBase . '/' . $img['path']);
+    if ($realPath && str_starts_with($realPath, $realBase)) {
+        if (!unlink($realPath)) {
+            error_log("ลบไฟล์ไม่สำเร็จ: $realPath");
+        }
+    }
+}
+
 $_SESSION['success'] = 'ลบกิจกรรมสำเร็จ';
-header('Location: /events');
+header('Location: /event');
 exit;

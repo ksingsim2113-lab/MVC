@@ -1,5 +1,6 @@
 <?php
 
+
 declare(strict_types=1);
 session_start();
 
@@ -37,3 +38,4 @@ if (in_array(strtolower($_SERVER['REQUEST_URI']), PUBLIC_ROUTES)) {
     header('Location: /');
     exit;
 }
+exit;
