@@ -25,9 +25,8 @@
             + สร้างกิจกรรม
         </a>
     </div>
-    
 
-    <?php if (empty($data['events'])): ?>
+    <?php if (empty($events)): ?>
         <div class="text-center py-16 text-gray-400">
             <p class="text-4xl mb-3">📭</p>
             <p>ยังไม่มีกิจกรรม</p>
@@ -35,10 +34,9 @@
         </div>
     <?php else: ?>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <?php foreach ($data['events'] as $event): ?>
+            <?php foreach ($events as $event): ?>
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition">
 
-                <!-- รูปภาพ -->
                 <div class="h-40 bg-gray-200">
                     <?php if ($event['cover']): ?>
                         <img src="/<?= htmlspecialchars($event['cover']) ?>"
@@ -59,7 +57,7 @@
                             class="flex-1 text-center text-sm bg-yellow-50 hover:bg-yellow-100 text-yellow-700 font-medium py-1.5 rounded-lg transition">
                             แก้ไข
                         </a>
-                        <<a href="/delete?id=<?= $event['id'] ?>"
+                        <a href="/delete?id=<?= $event['id'] ?>"
                             onclick="return confirm('ยืนยันลบกิจกรรมนี้?')"
                             class="flex-1 text-center text-sm bg-red-50 hover:bg-red-100 text-red-600 font-medium py-1.5 rounded-lg transition">
                             ลบ

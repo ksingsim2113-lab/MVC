@@ -14,6 +14,7 @@ const INDEX_ROUNTE = 'login';
 // ฟังชันสำหรับทำให้ URI ที่ร้องขอเข้ามาอยู่ในรูปแบบมาตรฐาน
 function normalizeUri(string $uri): string
 {
+    $uri = strtok($uri, '?');
     // ลบเครื่องหมาย '/' ที่อยู่ข้างหน้าและข้างหลังออก และแปลงเป็นตัวพิมพ์เล็ก
     $uri = strtolower(trim($uri, '/'));
 
@@ -40,6 +41,7 @@ function getFilePath(string $uri): string
 // ฟังก์ชันหลักสำหรับการจัดการเส้นทาง (routing) ที่ถูกเรียกใช้จาก index.php
 function dispatch(string $uri, string $method): void
 {
+    
     // ฟังชันสำหรับทำให้ URI ที่ร้องขอเข้ามาอยู่ในรูปแบบมาตรฐาน
     $uri = normalizeUri($uri);
 
