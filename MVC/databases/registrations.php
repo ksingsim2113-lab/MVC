@@ -12,7 +12,6 @@ function getRegistrationsByUserId(mysqli $conn, int $userId): array
             JOIN events e ON r.event_id = e.id 
             WHERE r.user_id = ? 
             ORDER BY r.created_at DESC";
-
     $stmt = $conn->prepare($sql);
     $stmt->bind_param('i', $userId);
     $stmt->execute();
@@ -29,7 +28,6 @@ function getParticipantsByEventId(mysqli $conn, int $eventId): array
             JOIN users u ON r.user_id = u.id 
             WHERE r.event_id = ? 
             ORDER BY r.created_at ASC";
-
     $stmt = $conn->prepare($sql);
     $stmt->bind_param('i', $eventId);
     $stmt->execute();
@@ -121,7 +119,6 @@ function getAllEventsWithStatus(mysqli $conn, int $currentUserId): array
     $stmt = $conn->prepare($sql);
     $stmt->bind_param('i', $currentUserId);
     $stmt->execute();
-
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
