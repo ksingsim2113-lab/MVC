@@ -37,3 +37,23 @@ CREATE TABLE event_images (
     path     VARCHAR(255) NOT NULL,
     FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
 );
+-- ตารางเก็บข้อมูลการลงทะเบียนเข้าร่วมกิจกรรม (หัวใจของข้อ 3.2 - 3.3)
+CREATE TABLE registrations (
+    id          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    event_id    INT UNSIGNED NOT NULL,              -- รหัสกิจกรรม
+    user_id     INT UNSIGNED NOT NULL,              -- รหัสผู้สมัคร (ผู้เข้าร่วม)
+    
+    -- เก็บสถานะการสมัคร (Pending=รออนุมัติ, Approved=อนุมัติ, Rejected=ปฏิเสธ) 
+    status      ENUM('pending', 'approved', 'rejected') DEFAULT 'pending', 
+    
+    -- สำหรับเช็คชื่อว่ามางานจริงๆ หรือยัง (ใช้คู่กับระบบ OTP) [cite: 47, 50]
+    is_checked_in TINYINT(1) DEFAULT 0,             -- 0 = ยังไม่มา, 1 = เข้าร่วมงานแล้ว
+    
+    remark      TEXT,                               -- (เพิ่มเติม) เหตุผลการปฏิเสธ หรือหมายเหตุอื่นๆ
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    -- เชื่อมความสัมพันธ์กับตารางอื่น
+    FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
