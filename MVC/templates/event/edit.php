@@ -28,7 +28,7 @@
         </div>
         <?php endif; ?>
 
-        <form method="POST" action="/event/edit?id=<?= $event['id'] ?>" enctype="multipart/form-data">
+        <form method="POST" action="/edit?id=<?= $event['id'] ?>" enctype="multipart/form-data">
 
             <div class="mb-4">
                 <label class="block text-sm text-gray-600 mb-1">ชื่อกิจกรรม</label>
