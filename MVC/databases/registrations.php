@@ -137,3 +137,39 @@ function hasUserRegistered(mysqli $conn, int $eventId, int $userId): bool
 
     return $stmt->num_rows > 0;
 }
+
+/**
+ * ตรวจสอบความถูกต้องของ OTP (เวอร์ชันใช้ตาราง registrations ตารางเดียว)
+ */
+function validateOTP(mysqli $conn, string $inputOtp, int $eventId): array
+{
+    // เปลี่ยนจาก SELECT ตาราง otp_codes เป็นดึงจาก registrations ตรงๆ
+    $sql = "SELECT id, otp_expires_at, is_checked_in 
+            FROM registrations 
+            WHERE otp_code = ? AND event_id = ? 
+            LIMIT 1";
+            
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('si', $inputOtp, $eventId);
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_assoc();
+
+    if (!$result) {
+        return ['success' => false, 'message' => 'ไม่พบรหัส OTP นี้ในระบบ'];
+    }
+
+    // ตรวจสอบเวลาหมดอายุ (เช็คกับเวลา PHP ปัจจุบัน)
+    if (strtotime($result['otp_expires_at']) < time()) {
+        return ['success' => false, 'message' => 'รหัส OTP หมดอายุแล้ว'];
+    }
+
+    if ($result['is_checked_in'] == 1) {
+        return ['success' => false, 'message' => 'รหัสนี้ถูกใช้เช็คอินไปแล้ว'];
+    }
+
+    return [
+        'success' => true, 
+        'message' => 'ตรวจสอบสำเร็จ', 
+        'reg_id'  => (int)$result['id']
+    ];
+}

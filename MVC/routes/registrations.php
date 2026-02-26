@@ -77,7 +77,8 @@ foreach ($rawParticipants as $p) {
         'phone'           => htmlspecialchars($p['phone'] ?? '-'),
         'status'          => $status,
         'status_badge'    => $statusBadge[$status] ?? $status,
-        'is_checked_in'   => (bool) $p['is_checked_in'],
+        'is_checked_in'  => (bool) $p['is_checked_in'],
+        'can_check_in'   => $status === 'approved' && !(bool)$p['is_checked_in'],
         'can_approve'     => $status === 'pending' || $status === 'rejected',
         'can_reject'      => $status === 'pending' || $status === 'approved',
     ];

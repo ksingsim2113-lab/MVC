@@ -99,10 +99,13 @@
                                 <td class="px-5 py-4"><?= $p['status_badge'] ?></td>
 
                                 <td class="px-5 py-4 text-center">
-                                    <?php if ($p['is_checked_in']): ?>
-                                        <span class="text-green-600 font-semibold text-xs">✅ เช็คอินแล้ว</span>
-                                    <?php else: ?>
-                                        <span class="text-gray-300 text-xs">–</span>
+                                    <?php if ($p['can_check_in']): ?>
+                                        <button onclick="openCheckInModal(<?= $p['id'] ?>, '<?= $p['full_name'] ?>')"
+                                            class="bg-green-600 hover:bg-green-700 text-white text-[11px] px-3 py-1 rounded transition">
+                                            ✅ เช็คอิน
+                                        </button>
+                                    <?php elseif ($p['is_checked_in']): ?>
+                                        <span class="text-green-600 font-bold text-[11px]">✔️ เข้างานแล้ว</span>
                                     <?php endif; ?>
                                 </td>
 
@@ -141,6 +144,38 @@
         <?php endif; ?>
 
     </div>
+    <div id="checkInModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-xl p-6 w-80 shadow-2xl">
+        <h3 class="font-bold text-lg mb-2">เช็คชื่อเข้างาน</h3>
+        <p id="modalName" class="text-sm text-gray-600 mb-4"></p>
+        
+        <form action="/check_in" method="POST">
+            <input type="hidden" name="registration_id" id="modalRegId">
+            <input type="hidden" name="event_id" value="<?= $event['id'] ?>">
+            
+            <label class="block text-xs font-bold text-gray-400 mb-1 uppercase">รหัส OTP 6 หลัก</label>
+            <input type="text" name="otp_code" maxlength="6" required 
+                   class="w-full text-center text-2xl font-mono tracking-widest border-2 border-indigo-100 rounded-lg py-2 focus:border-indigo-500 outline-none"
+                   placeholder="000000" autofocus>
+            
+            <div class="flex gap-2 mt-6">
+                <button type="button" onclick="closeCheckInModal()" class="flex-1 py-2 text-sm text-gray-500 hover:bg-gray-100 rounded-lg">ยกเลิก</button>
+                <button type="submit" class="flex-1 py-2 text-sm bg-indigo-600 text-white rounded-lg font-bold">ยืนยัน</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openCheckInModal(id, name) {
+    document.getElementById('modalRegId').value = id;
+    document.getElementById('modalName').innerText = name;
+    document.getElementById('checkInModal').classList.remove('hidden');
+}
+function closeCheckInModal() {
+    document.getElementById('checkInModal').classList.add('hidden');
+}
+</script>
 
     <?php include TEMPLATES_DIR . '/footer.php' ?>
 </body>
