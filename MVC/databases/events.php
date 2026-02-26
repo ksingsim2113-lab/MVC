@@ -117,3 +117,17 @@ function uploadEventImages(array $files, int $eventId): array
     }
     return $uploaded;
 }
+
+// ค้นหากิจกรรมทั้งหมด (ไม่กรอง user)
+function searchEvents(mysqli $conn, string $keyword = ''): array
+{
+    if ($keyword !== '') {
+        $like = '%' . $keyword . '%';
+        $stmt = $conn->prepare("SELECT * FROM events WHERE title LIKE ? ORDER BY start_date ASC");
+        $stmt->bind_param('s', $like);
+    } else {
+        $stmt = $conn->prepare("SELECT * FROM events ORDER BY start_date ASC");
+    }
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}

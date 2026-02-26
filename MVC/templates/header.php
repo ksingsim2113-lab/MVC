@@ -16,6 +16,11 @@
                 หน้าแรก
             </a>
 
+            <a href="/join"
+                class="hover:text-gray-200 transition duration-200">
+                เข้าร่วมกิจกรรม
+            </a>
+
             <a href="/create"
                 class="hover:text-gray-200 transition duration-200">
                 สร้างกิจกรรม
@@ -25,6 +30,7 @@
                 class="hover:text-gray-200 transition duration-200">
                 ออกจากระบบ
             </a>
+            
 
 
 
