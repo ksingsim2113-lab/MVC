@@ -9,6 +9,7 @@ $eventId = (int) ($_GET['id'] ?? 0);
 
 $event = getEventById($conn, $eventId);
 
+
 // เช็คว่ากิจกรรมมีอยู่จริงและเป็นเจ้าของ
 if (!$event || $event['user_id'] !== (int) $_SESSION['user_id']) {
     header('Location: /event');
@@ -16,6 +17,7 @@ if (!$event || $event['user_id'] !== (int) $_SESSION['user_id']) {
 }
 
 $images = getEventImages($conn, $eventId);
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = [
@@ -53,5 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 }
-
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($errors)) {
+    $event = array_merge($event, $data);
+}
 renderView('event/edit', ['event' => $event, 'images' => $images, 'errors' => $errors]);
