@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -91,7 +92,7 @@ function getAllEventsWithStatus(mysqli $conn, int $currentUserId): array
             FROM events e 
             LEFT JOIN registrations r ON e.id = r.event_id AND r.user_id = ?
             ORDER BY e.created_at DESC";
-            
+
     $stmt = $conn->prepare($sql);
     $stmt->bind_param('i', $currentUserId);
     $stmt->execute();
