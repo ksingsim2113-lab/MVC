@@ -2,43 +2,51 @@
 declare(strict_types=1);
 
 require_once DATABASES_DIR . '/events.php';
-require_once DATABASES_DIR . '/registrations.php'; // ดึงไฟล์ใหม่ที่เราสร้าง
+require_once DATABASES_DIR . '/registrations.php';
 
 $conn   = getConnection();
 $userId = (int) $_SESSION['user_id'];
 
-// 1. จัดการการกดปุ่ม "ลงทะเบียน" (ถ้ามีการ POST มา)
+// 1. จัดการการกดปุ่ม "ลงทะเบียน"
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['event_id'])) {
     $eventId = (int) $_POST['event_id'];
-    
-    // เช็คก่อนว่าเคยสมัครไปหรือยังเพื่อป้องกันข้อมูลซ้ำ
+
     if (!hasUserRegistered($conn, $eventId, $userId)) {
         createRegistration($conn, $eventId, $userId);
         $_SESSION['success'] = 'ส่งคำขอเข้าร่วมกิจกรรมเรียบร้อยแล้ว!';
     } else {
         $_SESSION['error'] = 'คุณได้ลงทะเบียนกิจกรรมนี้ไปแล้ว';
     }
-    
-    header('Location: /join'); // ป้องกันการกด Refresh แล้วส่งข้อมูลซ้ำ
+
+    header('Location: /join');
     exit;
 }
 
-// 2. ดึงกิจกรรมทั้งหมดพร้อมสถานะของ User คนนี้มาแสดง
-$events = getAllEventsWithStatus($conn, $userId);
+// 2. รับค่า search จาก GET
+$search    = trim($_GET['search']     ?? '');
+$dateStart = trim($_GET['date_start'] ?? '');
+$dateEnd   = trim($_GET['date_end']   ?? '');
 
-$success = $_SESSION['success'] ?? '';
-$error = $_SESSION['error'] ?? ''; // เพิ่มการจัดการข้อความแจ้งเตือนข้อผิดพลาด
-unset($_SESSION['success'], $_SESSION['error']);
+// 3. ดึงกิจกรรมพร้อม filter search
+$events = searchEventsWithStatus($conn, $userId, $search, $dateStart, $dateEnd);
 
-// ดึงรูปภาพประกอบ (ใช้ฟังก์ชันที่คุณส่งมา)
+// 4. ดึงรูปภาพ
 foreach ($events as &$event) {
     $imgs = getEventImages($conn, (int) $event['id']);
     $event['cover'] = $imgs[0]['path'] ?? null;
 }
+unset($event);
 
-// ส่งค่าไปที่ join_view.php
+// 5. Flash messages
+$success = $_SESSION['success'] ?? '';
+$error   = $_SESSION['error']   ?? '';
+unset($_SESSION['success'], $_SESSION['error']);
+
 renderView('event/join', [
-    'events' => $events, 
-    'success' => $success,
-    'error' => $error
+    'events'     => $events,
+    'success'    => htmlspecialchars($success),
+    'error'      => htmlspecialchars($error),
+    'search'     => htmlspecialchars($search),
+    'date_start' => htmlspecialchars($dateStart),
+    'date_end'   => htmlspecialchars($dateEnd),
 ]);

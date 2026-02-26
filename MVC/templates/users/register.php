@@ -11,7 +11,7 @@
 <body class="bg-gray-50 min-h-screen flex items-center justify-center py-10">
 
     <div class="bg-white w-full max-w-lg rounded-2xl shadow-md p-8">
-        <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">สมัครสมาชิก</h2>
+        <h2 class="text-2xl font-bold text-center text-gray-800 mb-6"> สมัครสมาชิก </h2>
 
         <form method="POST" action="/register">
 

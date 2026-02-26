@@ -119,15 +119,42 @@ function uploadEventImages(array $files, int $eventId): array
 }
 
 // ค้นหากิจกรรมทั้งหมด (ไม่กรอง user)
-function searchEvents(mysqli $conn, string $keyword = ''): array
+function searchEventsWithStatus(mysqli $conn, int $currentUserId, string $search = '', string $dateStart = '', string $dateEnd = ''): array
 {
-    if ($keyword !== '') {
-        $like = '%' . $keyword . '%';
-        $stmt = $conn->prepare("SELECT * FROM events WHERE title LIKE ? ORDER BY start_date ASC");
-        $stmt->bind_param('s', $like);
-    } else {
-        $stmt = $conn->prepare("SELECT * FROM events ORDER BY start_date ASC");
+    $conditions = [];
+    $params     = [$currentUserId];
+    $types      = 'i';
+
+    if ($search !== '') {
+        $conditions[] = 'e.title LIKE ?';
+        $params[]     = '%' . $search . '%';
+        $types       .= 's';
     }
+
+    if ($dateStart !== '') {
+        $conditions[] = 'e.start_date >= ?';
+        $params[]     = $dateStart . ' 00:00:00';
+        $types       .= 's';
+    }
+
+    if ($dateEnd !== '') {
+        $conditions[] = 'e.start_date <= ?';
+        $params[]     = $dateEnd . ' 23:59:59';
+        $types       .= 's';
+    }
+
+    $where = !empty($conditions) ? 'AND ' . implode(' AND ', $conditions) : '';
+
+    $sql = "SELECT e.*, r.status AS reg_status, r.id AS reg_id
+            FROM events e
+            LEFT JOIN registrations r
+            ON e.id = r.event_id AND r.user_id = ?
+            WHERE 1=1 $where
+            ORDER BY e.start_date ASC";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param($types, ...$params);
     $stmt->execute();
+
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
