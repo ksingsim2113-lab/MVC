@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>กิจกรรมของฉัน</title>
+    <title>เข้าร่วมกิจกรรม</title>
 </head>
 <body class="bg-gray-50 min-h-screen">
 
@@ -18,18 +18,15 @@
         </div>
     <?php endif; ?>
 
-    <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-gray-800">กิจกรรม</h1>
-        <a href="/create"
-            class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition">
-        </a>
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">ค้นหาและเข้าร่วมกิจกรรม</h1>
+        <p class="text-gray-500 text-sm">เลือกกิจกรรมที่คุณสนใจและกดลงทะเบียนเพื่อเข้าร่วม</p>
     </div>
 
     <?php if (empty($events)): ?>
         <div class="text-center py-16 text-gray-400">
-            <p class="text-4xl mb-3">📭</p>
-            <p>ยังไม่มีกิจกรรม</p>
-            <a href="/create" class="text-indigo-600 hover:underline text-sm mt-2 inline-block">สร้างกิจกรรมแรก</a>
+            <p class="text-4xl mb-3">🔍</p>
+            <p>ไม่พบกิจกรรมที่เปิดรับลงทะเบียนในขณะนี้</p>
         </div>
     <?php else: ?>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -37,7 +34,7 @@
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition">
 
                 <div class="h-40 bg-gray-200">
-                    <?php if ($event['cover']): ?>
+                    <?php if (!empty($event['cover'])): ?>
                         <img src="/<?= htmlspecialchars($event['cover']) ?>"
                             class="w-full h-full object-cover" alt="cover">
                     <?php else: ?>
@@ -51,11 +48,41 @@
                     <p class="text-xs text-gray-500 mb-1">📍 <?= htmlspecialchars($event['location']) ?></p>
                     <p class="text-xs text-gray-500 mb-3">👥 รับสูงสุด <?= $event['max_participants'] ?> คน</p>
 
-                    <div class="flex gap-2">
-                        <a href="/join?id=<?= $event['id'] ?>"
-                            class="flex-1 text-center text-sm bg-yellow-50 hover:bg-yellow-100 text-yellow-700 font-medium py-1.5 rounded-lg transition">
-                            ลงทะเบียน
-                        </a>
+                    <div class="mt-4">
+                        <?php if (isset($event['reg_status'])): ?>
+                            <?php 
+                                $statusClasses = [
+                                    'pending' => 'bg-yellow-100 text-yellow-700',
+                                    'approved' => 'bg-green-100 text-green-700',
+                                    'rejected' => 'bg-red-100 text-red-700'
+                                ];
+                                $statusLabels = [
+                                    'pending' => '⏳ รออนุมัติ',
+                                    'approved' => '✅ อนุมัติแล้ว',
+                                    'rejected' => '❌ ปฏิเสธการเข้าร่วม'
+                                ];
+                                $currentStatus = $event['reg_status'];
+                            ?>
+                            <div class="w-full text-center py-2 rounded-lg text-sm font-bold <?= $statusClasses[$currentStatus] ?>">
+                                <?= $statusLabels[$currentStatus] ?>
+                            </div>
+                            
+                            <?php if ($currentStatus === 'approved'): ?>
+                                <a href="/otp?event_id=<?= $event['id'] ?>" 
+                                   class="block text-center mt-2 text-xs text-indigo-600 hover:underline">
+                                   ดูรหัส OTP สำหรับเช็คชื่อ
+                                </a>
+                            <?php endif; ?>
+
+                        <?php else: ?>
+                            <form action="/join" method="POST">
+                                <input type="hidden" name="event_id" value="<?= $event['id'] ?>">
+                                <button type="submit" 
+                                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold py-2 rounded-lg transition">
+                                    ลงทะเบียนเข้าร่วม
+                                </button>
+                            </form>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
