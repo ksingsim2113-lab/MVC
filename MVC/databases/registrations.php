@@ -139,11 +139,15 @@ function hasUserRegistered(mysqli $conn, int $eventId, int $userId): bool
 }
 
 /**
- * ตรวจสอบความถูกต้องของ OTP (เวอร์ชันใช้ตาราง registrations ตารางเดียว)
+ * ตรวจสอบความถูกต้องของ OTP (สำหรับฝั่งผู้จัดงาน)
+ * @return array ['success' => bool, 'message' => string, 'reg_id' => int|null]
+ */
+/**
+ * ตรวจสอบความถูกต้องของ OTP (แก้ไขให้ใช้ตาราง registrations ตารางเดียว)
  */
 function validateOTP(mysqli $conn, string $inputOtp, int $eventId): array
 {
-    // เปลี่ยนจาก SELECT ตาราง otp_codes เป็นดึงจาก registrations ตรงๆ
+    // เปลี่ยน SQL จากเดิมที่ JOIN กับ otp_codes ให้ดึงจาก registrations ตรงๆ
     $sql = "SELECT id, otp_expires_at, is_checked_in 
             FROM registrations 
             WHERE otp_code = ? AND event_id = ? 
@@ -154,19 +158,22 @@ function validateOTP(mysqli $conn, string $inputOtp, int $eventId): array
     $stmt->execute();
     $result = $stmt->get_result()->fetch_assoc();
 
+    // 1. ถ้าไม่พบรหัส
     if (!$result) {
         return ['success' => false, 'message' => 'ไม่พบรหัส OTP นี้ในระบบ'];
     }
 
-    // ตรวจสอบเวลาหมดอายุ (เช็คกับเวลา PHP ปัจจุบัน)
+    // 2. เช็คว่าหมดอายุหรือยัง
     if (strtotime($result['otp_expires_at']) < time()) {
         return ['success' => false, 'message' => 'รหัส OTP หมดอายุแล้ว'];
     }
 
+    // 3. เช็คว่าเคยเช็คอินไปหรือยัง
     if ($result['is_checked_in'] == 1) {
         return ['success' => false, 'message' => 'รหัสนี้ถูกใช้เช็คอินไปแล้ว'];
     }
 
+    // ถ้าผ่านทุกเงื่อนไข ให้ส่งค่า id ของการลงทะเบียนกลับไป
     return [
         'success' => true, 
         'message' => 'ตรวจสอบสำเร็จ', 

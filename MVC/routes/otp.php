@@ -14,7 +14,7 @@ if (!$eventId) {
 
 // 1. ดึงข้อมูลการลงทะเบียน พร้อม OTP เดิมที่มีอยู่ (ถ้ามี)
 $stmt = $conn->prepare("
-    SELECT id, status, otp_code, otp_expires_at 
+    SELECT id, status, otp_code, otp_expires_at , is_checked_in
     FROM registrations 
     WHERE event_id = ? AND user_id = ? 
     LIMIT 1
@@ -46,6 +46,11 @@ if (!$otpCode || !$expiresAt || strtotime($expiresAt) < time()) {
     ");
     $updateStmt->bind_param('ssi', $otpCode, $newExpiresAt, $registration['id']);
     $updateStmt->execute();
+}
+if ((bool)$registration['is_checked_in']) {
+    $_SESSION['error'] = "คุณได้เช็คอินเข้าร่วมงานนี้ไปแล้ว";
+    header('Location: /event');
+    exit;
 }
 
 // 5. ส่งค่าไปที่หน้า View
