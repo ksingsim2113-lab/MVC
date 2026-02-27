@@ -10,11 +10,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $eventId = (int) $_POST['event_id'];
     $otpInput = $_POST['otp_code'] ?? '';
 
-    // ใช้ฟังก์ชันที่เราเขียนไว้ตรวจสอบ OTP
+    
     $result = validateOTP($conn, $otpInput, $eventId);
 
     if ($result['success'] && $result['reg_id'] === $regId) {
-        // ถ้ารหัสถูก ให้มาร์คว่าเช็คอินแล้ว
+        
         markAsCheckedIn($conn, $regId);
         $_SESSION['success'] = 'เช็คอินสำเร็จ! ยินดีต้อนรับเข้าสู่งาน';
     } else {

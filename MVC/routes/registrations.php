@@ -7,27 +7,21 @@ require_once __DIR__ . '/../databases/registrations.php';
 require_once __DIR__ . '/../databases/users.php';
 
 $conn = getConnection();   // 🔥 ต้องมีบรรทัดนี้
-/* ===============================
-   1) รับ event_id
-================================= */
+
 $eventId = $_GET['event_id'] ?? null;
 
 if (!$eventId) {
     die('ไม่พบกิจกรรม');
 }
 
-/* ===============================
-   2) ดึงข้อมูลกิจกรรม
-================================= */
+
 $event = getEventById($conn, $eventId);
 
 if (!$event) {
     die('ไม่พบกิจกรรม');
 }
 
-/* ===============================
-   3) จัดการ POST (อนุมัติ / ปฏิเสธ)
-================================= */
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $registrationId = (int) ($_POST['registration_id'] ?? 0);
@@ -57,22 +51,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
-/* ===============================
-   4) ดึงรายชื่อผู้สมัคร
-================================= */
+
 $rawParticipants = getParticipantsByEventId($conn, $eventId);
 $approvedCount   = countApprovedByEvent($conn, $eventId);
 
-/* ===============================
-   5) Flash Message
-================================= */
+
 $success = $_SESSION['success'] ?? '';
 $error   = $_SESSION['error'] ?? '';
 unset($_SESSION['success'], $_SESSION['error']);
 
-/* ===============================
-   6) เตรียมข้อมูล event สำหรับ view
-================================= */
+
 $eventView = [
     'id'               => $event['id'],
     'title'            => htmlspecialchars($event['title']),
@@ -81,9 +69,7 @@ $eventView = [
     'max_participants' => $event['max_participants'],
 ];
 
-/* ===============================
-   7) เตรียมข้อมูล participants
-================================= */
+
 $genderLabel = [
     'male'   => 'ชาย',
     'female' => 'หญิง',
@@ -117,9 +103,7 @@ foreach ($rawParticipants as $p) {
     ];
 }
 
-/* ===============================
-   8) Filter
-================================= */
+
 $activeFilter = $_GET['filter'] ?? 'all';
 if (!in_array($activeFilter, ['all', 'pending', 'approved', 'rejected'])) {
     $activeFilter = 'all';
@@ -140,9 +124,7 @@ $filterTabs = [
     ['filter' => 'rejected', 'label' => 'ถูกปฏิเสธ',                      'active' => $activeFilter === 'rejected'],
 ];
 
-/* ===============================
-   9) Render View
-================================= */
+
 renderView('event/registrations', [
     'event'         => $eventView,
     'participants'  => $participants,

@@ -17,23 +17,22 @@ if (!$event || (int) $event['user_id'] !== $userId) {
 
 $participants = getParticipantsByEventId($conn, $eventId);
 
-// สถิติ 1: สถานะการลงทะเบียน
+
 $statusCount = ['pending' => 0, 'approved' => 0, 'rejected' => 0];
 foreach ($participants as $p) $statusCount[$p['status']]++;
 
-// สถิติ 2: เพศ
+
 $genderCount = ['male' => 0, 'female' => 0, 'other' => 0];
 foreach ($participants as $p) {
     $g = $p['gender'] ?? 'other';
     $genderCount[$g] = ($genderCount[$g] ?? 0) + 1;
 }
 
-// สถิติ 3: check-in (เฉพาะ approved)
 $approved    = array_filter($participants, fn($p) => $p['status'] === 'approved');
 $checkedIn   = count(array_filter($approved, fn($p) => (int)$p['is_checked_in'] === 1));
 $notCheckedIn = count($approved) - $checkedIn;
 
-// สถิติ 4: ช่วงอายุ (เฉพาะ approved)
+
 $ageGroups = ['< 18' => 0, '18-25' => 0, '26-35' => 0, '36-45' => 0, '> 45' => 0];
 foreach ($approved as $p) {
     if (empty($p['birthdate'])) continue;

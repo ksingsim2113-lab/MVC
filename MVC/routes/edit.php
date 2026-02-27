@@ -10,7 +10,7 @@ $eventId = (int) ($_GET['id'] ?? 0);
 $event = getEventById($conn, $eventId);
 
 
-// เช็คว่ากิจกรรมมีอยู่จริงและเป็นเจ้าของ
+
 if (!$event || $event['user_id'] !== (int) $_SESSION['user_id']) {
     header('Location: /event');
     exit;
@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         updateEvent($conn, $eventId, $data);
 
-        // ถ้ามีรูปใหม่ให้ลบรูปเก่าแล้วอัปโหลดใหม่
+       
         if (!empty($_FILES['images']['name'][0])) {
             deleteEventImages($conn, $eventId);
             $paths = uploadEventImages($_FILES['images'], $eventId);

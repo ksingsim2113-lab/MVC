@@ -12,7 +12,6 @@ if (!$eventId) {
     exit;
 }
 
-// 1. ดึงข้อมูลการลงทะเบียน พร้อม OTP เดิมที่มีอยู่ (ถ้ามี)
 $stmt = $conn->prepare("
     SELECT id, status, otp_code, otp_expires_at , is_checked_in
     FROM registrations 
@@ -23,7 +22,7 @@ $stmt->bind_param('ii', $eventId, $userId);
 $stmt->execute();
 $registration = $stmt->get_result()->fetch_assoc();
 
-// ตรวจสอบสิทธิ์
+
 if (!$registration || $registration['status'] !== 'approved') {
     die("คุณไม่มีสิทธิ์เข้าถึง หรือยังไม่ได้รับการอนุมัติ");
 }
@@ -31,14 +30,14 @@ if (!$registration || $registration['status'] !== 'approved') {
 $otpCode = $registration['otp_code'];
 $expiresAt = $registration['otp_expires_at'];
 
-// 2. เช็คว่า OTP เดิม "ว่าง" หรือ "หมดอายุ" หรือไม่ (หมดอายุใน 30 นาที)
+
 if (!$otpCode || !$expiresAt || strtotime($expiresAt) < time()) {
     
-    // 3. สร้าง OTP ใหม่ 6 หลัก
+    
     $otpCode = (string) rand(100000, 999999);
     $newExpiresAt = date('Y-m-d H:i:s', strtotime('+30 minutes'));
     
-    // 4. Update กลับลงไปที่ตาราง registrations ในแถวเดิมของ User คนนี้
+   
     $updateStmt = $conn->prepare("
         UPDATE registrations 
         SET otp_code = ?, otp_expires_at = ? 
@@ -53,7 +52,7 @@ if ((bool)$registration['is_checked_in']) {
     exit;
 }
 
-// 5. ส่งค่าไปที่หน้า View
+
 renderView('event/otp', [
     'otpCode' => $otpCode,
     'eventId' => $eventId

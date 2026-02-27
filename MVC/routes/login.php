@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 require_once DATABASES_DIR . '/users.php';
 
-// ถ้า login แล้ว redirect ไป profile
+
 if (isset($_SESSION['user_id'])) {
     header('Location: /event');
     exit;

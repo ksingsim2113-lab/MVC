@@ -153,6 +153,7 @@
     <?php endif; ?>
 </div>
 
+
 <?php include TEMPLATES_DIR . '/footer.php' ?>
 </body>
 </html>
