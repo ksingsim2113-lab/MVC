@@ -153,6 +153,47 @@
         <?php endif; ?>
 
 </div>
+<div id="checkInModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-xl p-6 w-80 shadow-2xl">
+        <h3 class="font-bold text-lg mb-2 text-gray-800">เช็คชื่อเข้างาน</h3>
+        <p id="modalName" class="text-sm text-gray-600 mb-4"></p>
+        
+        <form action="/check_in" method="POST">
+            <input type="hidden" name="registration_id" id="modalRegId">
+            <input type="hidden" name="event_id" value="<?= $event['id'] ?>">
+            
+            <label class="block text-[10px] font-bold text-gray-400 mb-1 uppercase">รหัส OTP 6 หลัก</label>
+            <input type="text" name="otp_code" maxlength="6" required 
+                   class="w-full text-center text-2xl font-mono tracking-widest border-2 border-indigo-100 rounded-lg py-2 focus:border-indigo-500 outline-none"
+                   placeholder="000000" autofocus>
+            
+            <div class="flex gap-2 mt-6">
+                <button type="button" onclick="closeCheckInModal()" class="flex-1 py-2 text-sm text-gray-500 hover:bg-gray-100 rounded-lg transition">ยกเลิก</button>
+                <button type="submit" class="flex-1 py-2 text-sm bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 transition">ยืนยัน</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openCheckInModal(id, name) {
+    document.getElementById('modalRegId').value = id;
+    document.getElementById('modalName').innerText = 'ผู้สมัคร: ' + name;
+    document.getElementById('checkInModal').classList.remove('hidden');
+}
+
+function closeCheckInModal() {
+    document.getElementById('checkInModal').classList.add('hidden');
+}
+
+// ปิด modal เมื่อคลิกพื้นหลัง (เท่ๆ)
+window.onclick = function(event) {
+    let modal = document.getElementById('checkInModal');
+    if (event.target == modal) {
+        closeCheckInModal();
+    }
+}
+</script>
 
     <?php include TEMPLATES_DIR . '/footer.php' ?>
 </body>
