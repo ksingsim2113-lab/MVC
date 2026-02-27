@@ -17,10 +17,16 @@
 
 <div class="max-w-4xl mx-auto px-4 py-8">
 
-    <a href="/registrations?event_id=<?= $event['id'] ?>"
-       class="inline-block mb-6 bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded text-sm">
-        ← กลับหน้าจัดการผู้สมัคร
-    </a>
+    <div class="flex justify-between items-center mb-6">
+        <a href="/registrations?event_id=<?= $event['id'] ?>"
+           class="inline-block bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded text-sm">
+            ← กลับหน้าจัดการผู้สมัคร
+        </a>
+        <a href="/stats?event_id=<?= $event['id'] ?>"
+           class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded text-sm">
+            📊 ดูสถิติ
+        </a>
+    </div>
 
     <div class="bg-white rounded-2xl shadow p-6 mb-6">
         <h1 class="text-2xl font-bold">

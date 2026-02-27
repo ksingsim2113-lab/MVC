@@ -25,7 +25,7 @@ function getRegistrationsByUserId(mysqli $conn, int $userId): array
  */
 function getParticipantsByEventId(mysqli $conn, int $eventId): array
 {
-    $sql = "SELECT r.*, u.first_name, u.last_name, u.email, u.gender, u.phone
+    $sql = "SELECT r.*, u.first_name, u.last_name, u.email, u.gender, u.phone, u.birthdate
             FROM registrations r
             JOIN users u ON r.user_id = u.id
             WHERE r.event_id = ?
