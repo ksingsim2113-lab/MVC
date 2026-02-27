@@ -4,8 +4,8 @@ function getConnection(): mysqli
 {
     $hostname = 'localhost';
     $dbName = 'enrollment';
-    $username = 'damo3';
-    $password = '123';
+    $username = 'demo';
+    $password = 'abc123';
 
     $conn = new mysqli($hostname, $username, $password, $dbName);
 
