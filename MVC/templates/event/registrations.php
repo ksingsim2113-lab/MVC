@@ -23,7 +23,6 @@
 
 <div class="max-w-5xl mx-auto px-4 py-8">
 
-<<<<<<< HEAD
     <!-- Back link + Participants button -->
     <div class="flex items-center justify-between mb-4">
         <a href="/event" class="text-sm text-indigo-600 hover:underline">
@@ -65,44 +64,6 @@
             <a href="/registrations?event_id=<?= $event['id'] ?>&filter=<?= $tab['filter'] ?>"
                class="px-4 py-1.5 rounded-full text-sm font-medium transition
                <?= $tab['active'] ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200' ?>">
-=======
-    <!-- ปุ่มกลับ -->
-    <a href="/event"
-       class="inline-block mb-6 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
-        ← กลับหน้ากิจกรรมของฉัน
-    </a>
-
-    <!-- Event header -->
-    <div class="bg-white rounded-2xl shadow-sm border p-6 mb-6">
-        <h1 class="text-2xl font-bold mb-2">จัดการผู้สมัคร</h1>
-        <p class="text-sm text-gray-500"><?= $event['title'] ?></p>
-        <p class="text-xs text-gray-400 mt-1">
-            📅 <?= $event['start_date'] ?> |
-            📍 <?= $event['location'] ?> |
-            👥 <?= $approvedCount ?> / <?= $event['max_participants'] ?> คน
-        </p>
-    </div>
-
-    <!-- Flash -->
-    <?php if (!empty($success)): ?>
-        <div class="bg-green-100 text-green-700 px-4 py-2 rounded mb-4 text-sm">
-            <?= $success ?>
-        </div>
-    <?php endif; ?>
-
-    <?php if (!empty($error)): ?>
-        <div class="bg-red-100 text-red-700 px-4 py-2 rounded mb-4 text-sm">
-            <?= $error ?>
-        </div>
-    <?php endif; ?>
-
-    <!-- Filter -->
-    <div class="flex gap-2 mb-4">
-        <?php foreach ($filterTabs as $tab): ?>
-            <a href="/registrations?event_id=<?= $event['id'] ?>&filter=<?= $tab['filter'] ?>"
-               class="px-4 py-1.5 rounded-full text-sm font-medium
-               <?= $tab['active'] ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-600' ?>">
->>>>>>> ae76b71a814063b2d7c6a320e205622b78d0a8bb
                 <?= $tab['label'] ?>
             </a>
         <?php endforeach; ?>
@@ -185,4 +146,5 @@
 
 <?php include TEMPLATES_DIR . '/footer.php' ?>
 </body>
+
 </html>
