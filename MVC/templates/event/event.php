@@ -63,20 +63,28 @@
                     </div>
 
                     <div class="p-4">
-                        <h3 class="font-bold text-gray-800 mb-1 truncate"><?= htmlspecialchars($reg['title']) ?></h3>
-                        <p class="text-[11px] text-gray-500 mb-2 truncate">📍 <?= htmlspecialchars($reg['location']) ?></p>
+    <h3 class="font-bold text-gray-800 mb-1 truncate"><?= htmlspecialchars($reg['title']) ?></h3>
+    <p class="text-[11px] text-gray-500 mb-2 truncate">📍 <?= htmlspecialchars($reg['location']) ?></p>
 
-                        <?php if ($status === 'approved'): ?>
-                            <a href="/otp?event_id=<?= $reg['event_id'] ?>"
-                               class="block w-full text-center text-xs bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition font-semibold">
-                               🔑 ดูรหัส OTP / เช็คอิน
-                            </a>
-                        <?php else: ?>
-                            <button disabled class="w-full text-center text-xs bg-gray-100 text-gray-400 py-2 rounded-lg font-medium cursor-not-allowed">
-                                รอการอนุมัติ
-                            </button>
-                        <?php endif; ?>
-                    </div>
+    <?php if ($status === 'approved'): ?>
+        
+        <?php if ((bool)$reg['is_checked_in']): ?>
+            <div class="w-full text-center text-xs bg-green-50 text-green-600 py-2 rounded-lg font-bold border border-green-200">
+                ✅ เข้าร่วมงานเรียบร้อยแล้ว
+            </div>
+        <?php else: ?>
+            <a href="/otp?event_id=<?= $reg['event_id'] ?>"
+               class="block w-full text-center text-xs bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition font-semibold">
+               🔑 ดูรหัส OTP / เช็คอิน
+            </a>
+        <?php endif; ?>
+
+    <?php else: ?>
+        <button disabled class="w-full text-center text-xs bg-gray-100 text-gray-400 py-2 rounded-lg font-medium cursor-not-allowed">
+            รอการอนุมัติ
+        </button>
+    <?php endif; ?>
+</div>
                 </div>
                 <?php endforeach; ?>
             </div>

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * 1. ดึงรายการกิจกรรมที่ผู้ใช้คนนั้นขอเข้าร่วม (ข้อ 3.3)
+ * 1. ดึงรายการกิจกรรมที่ผู้ใช้คนนั้นขอเข้าร่วม
  */
 function getRegistrationsByUserId(mysqli $conn, int $userId): array
 {
@@ -12,9 +12,11 @@ function getRegistrationsByUserId(mysqli $conn, int $userId): array
             JOIN events e ON r.event_id = e.id 
             WHERE r.user_id = ? 
             ORDER BY r.created_at DESC";
+
     $stmt = $conn->prepare($sql);
     $stmt->bind_param('i', $userId);
     $stmt->execute();
+
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
@@ -23,35 +25,38 @@ function getRegistrationsByUserId(mysqli $conn, int $userId): array
  */
 function getParticipantsByEventId(mysqli $conn, int $eventId): array
 {
-    $sql = "SELECT r.*, u.first_name, u.last_name, u.email, u.gender, u.phone 
-            FROM registrations r 
-            JOIN users u ON r.user_id = u.id 
-            WHERE r.event_id = ? 
+    $sql = "SELECT r.*, u.first_name, u.last_name, u.email, u.gender, u.phone
+            FROM registrations r
+            JOIN users u ON r.user_id = u.id
+            WHERE r.event_id = ?
             ORDER BY r.created_at ASC";
+
     $stmt = $conn->prepare($sql);
     $stmt->bind_param('i', $eventId);
     $stmt->execute();
+
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
 /**
- * 3. อนุมัติหรือปฏิเสธ (กันค่า status มั่ว)
+ * 3. อนุมัติหรือปฏิเสธ
  */
 function updateRegistrationStatus(mysqli $conn, int $registrationId, string $status): bool
 {
     $allowed = ['approved', 'rejected'];
 
     if (!in_array($status, $allowed, true)) {
-        return false; // ป้องกันการส่งค่าผิด
+        return false;
     }
 
     $stmt = $conn->prepare("UPDATE registrations SET status = ? WHERE id = ?");
     $stmt->bind_param('si', $status, $registrationId);
+
     return $stmt->execute();
 }
 
 /**
- * 4. เช็คจำนวนคนที่อนุมัติแล้ว (ใช้กันเต็มจำนวน)
+ * 4. นับจำนวนที่อนุมัติแล้ว
  */
 function countApprovedByEvent(mysqli $conn, int $eventId): int
 {
@@ -63,13 +68,14 @@ function countApprovedByEvent(mysqli $conn, int $eventId): int
 
     $stmt->bind_param('i', $eventId);
     $stmt->execute();
+
     $result = $stmt->get_result()->fetch_assoc();
 
     return (int) $result['total'];
 }
 
 /**
- * 5. เช็คชื่อเข้างาน (ต้อง approved เท่านั้น)
+ * 5. เช็คอิน (ต้อง approved เท่านั้น)
  */
 function markAsCheckedIn(mysqli $conn, int $registrationId): bool
 {
@@ -80,15 +86,15 @@ function markAsCheckedIn(mysqli $conn, int $registrationId): bool
     );
 
     $stmt->bind_param('i', $registrationId);
+
     return $stmt->execute();
 }
 
 /**
- * 6. สมัครเข้าร่วมกิจกรรม (กันสมัครซ้ำ)
+ * 6. สมัครเข้าร่วมกิจกรรม
  */
 function createRegistration(mysqli $conn, int $eventId, int $userId): int
 {
-    // ป้องกันสมัครซ้ำ
     if (hasUserRegistered($conn, $eventId, $userId)) {
         return 0;
     }
@@ -106,24 +112,25 @@ function createRegistration(mysqli $conn, int $eventId, int $userId): int
 }
 
 /**
- * 7. ดึงกิจกรรมทั้งหมด พร้อมสถานะของ user คนนี้
+ * 7. ดึงกิจกรรมทั้งหมด พร้อมสถานะของ user
  */
 function getAllEventsWithStatus(mysqli $conn, int $currentUserId): array
 {
     $sql = "SELECT e.*, r.status AS reg_status, r.id AS reg_id 
-            FROM events e 
-            LEFT JOIN registrations r 
+            FROM events e
+            LEFT JOIN registrations r
             ON e.id = r.event_id AND r.user_id = ?
             ORDER BY e.created_at DESC";
 
     $stmt = $conn->prepare($sql);
     $stmt->bind_param('i', $currentUserId);
     $stmt->execute();
+
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
 /**
- * 8. ตรวจสอบว่าผู้ใช้สมัครกิจกรรมนี้แล้วหรือยัง
+ * 8. เช็คว่าสมัครแล้วหรือยัง
  */
 function hasUserRegistered(mysqli $conn, int $eventId, int $userId): bool
 {
@@ -139,26 +146,25 @@ function hasUserRegistered(mysqli $conn, int $eventId, int $userId): bool
 }
 
 /**
- * ตรวจสอบความถูกต้องของ OTP (เวอร์ชันใช้ตาราง registrations ตารางเดียว)
+ * 9. ตรวจสอบ OTP
  */
 function validateOTP(mysqli $conn, string $inputOtp, int $eventId): array
 {
-    // เปลี่ยนจาก SELECT ตาราง otp_codes เป็นดึงจาก registrations ตรงๆ
-    $sql = "SELECT id, otp_expires_at, is_checked_in 
-            FROM registrations 
-            WHERE otp_code = ? AND event_id = ? 
+    $sql = "SELECT id, otp_expires_at, is_checked_in
+            FROM registrations
+            WHERE otp_code = ? AND event_id = ?
             LIMIT 1";
-            
+
     $stmt = $conn->prepare($sql);
     $stmt->bind_param('si', $inputOtp, $eventId);
     $stmt->execute();
+
     $result = $stmt->get_result()->fetch_assoc();
 
     if (!$result) {
         return ['success' => false, 'message' => 'ไม่พบรหัส OTP นี้ในระบบ'];
     }
 
-    // ตรวจสอบเวลาหมดอายุ (เช็คกับเวลา PHP ปัจจุบัน)
     if (strtotime($result['otp_expires_at']) < time()) {
         return ['success' => false, 'message' => 'รหัส OTP หมดอายุแล้ว'];
     }
@@ -168,8 +174,8 @@ function validateOTP(mysqli $conn, string $inputOtp, int $eventId): array
     }
 
     return [
-        'success' => true, 
-        'message' => 'ตรวจสอบสำเร็จ', 
-        'reg_id'  => (int)$result['id']
+        'success' => true,
+        'message' => 'ตรวจสอบสำเร็จ',
+        'reg_id'  => (int) $result['id']
     ];
 }
