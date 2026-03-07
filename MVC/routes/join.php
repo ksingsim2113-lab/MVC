@@ -7,9 +7,16 @@ require_once DATABASES_DIR . '/registrations.php';
 $conn   = getConnection();
 $userId = (int) $_SESSION['user_id'];
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['event_id'])) {
     $eventId = (int) $_POST['event_id'];
+
+    // เจ้าของกิจกรรมไม่สามารถลงทะเบียนตัวเองได้
+    $event = getEventById($conn, $eventId);
+    if ($event && (int) $event['user_id'] === $userId) {
+        $_SESSION['error'] = 'คุณเป็นเจ้าของกิจกรรมนี้';
+        header('Location: /join');
+        exit;
+    }
 
     if (!hasUserRegistered($conn, $eventId, $userId)) {
         createRegistration($conn, $eventId, $userId);
@@ -22,21 +29,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['event_id'])) {
     exit;
 }
 
-
 $search    = trim($_GET['search']     ?? '');
 $dateStart = trim($_GET['date_start'] ?? '');
 $dateEnd   = trim($_GET['date_end']   ?? '');
 
-
 $events = searchEventsWithStatus($conn, $userId, $search, $dateStart, $dateEnd);
-
 
 foreach ($events as &$event) {
     $imgs = getEventImages($conn, (int) $event['id']);
-    $event['cover'] = $imgs[0]['path'] ?? null;
+    $event['cover']    = $imgs[0]['path'] ?? null;
+    $event['images']   = array_column($imgs, 'path');
+    $event['is_owner'] = (int) $event['user_id'] === $userId;
 }
 unset($event);
-
 
 $success = $_SESSION['success'] ?? '';
 $error   = $_SESSION['error']   ?? '';
